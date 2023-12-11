@@ -1,16 +1,16 @@
 const express = require('express');
 const buyerrouter = express.Router();
-const User = require('./user.model');
-const Catalog = require('./catalog.model');
-const Product = require('./product.model');
-const Order = require('./order.model');
+const User = require('../models/user');
+const Catalog = require('../models/catlog');
+
+const Order = require('../models/order');
 const auth=require('../middleware/auth')
 
 buyerrouter.get("/api/buyer/list-of-sellers",auth,async (req,res)=>{
     try{
-        const {email,password}=req.body
+      
   
-        const user=User.find({userType: 'seller'});
+        const sellers=await User.find({ userType: 'seller' });
         
         res.status(200).json(sellers);
        
@@ -24,29 +24,32 @@ buyerrouter.get("/api/buyer/seller-catalog/:seller_id",auth,async (req,res)=>{
     try{
         
   
-        const catalog=Catalog.findone({seller:req.params.seller_id}).populate('products');
+        const catalog=await Catalog.findOne({seller:req.params.seller_id}).populate('products');
         
-        res.status(200).json(catalog);
+       return  res.status(200).json(catalog);
        
       }
       catch(e){
         
-          res.status(500).json({error:e.message});
+        return   res.status(500).json({error:e.message});
       }
 })
-// /api/buyer/create-order/:seller_id
+
 
 buyerrouter.post("/api/buyer/create-order/:seller_id",auth,async(req,res)=>{
     try{
    const {products}=req.body
-   buyerid=req.user
-   sellerid=req.params.seller_id
-   const newOrder=new Order({buyer:buyerid,seller:sellerid,products})
-   newOrder.save()
-   res.status(200).json(newOrder);
+   const buyerid=req.user
+   const sellerid=req.params.seller_id
+  
+   const newOrder= new Order({buyer:buyerid,seller:sellerid,products})
+   await newOrder.save()
+   return res.status(200).json(newOrder);
     }catch(e){
-        res.status(500).json({error:e.message});
+       return  res.status(500).json({error:e.message});
     }
 
 })
+
+module.exports=buyerrouter
 

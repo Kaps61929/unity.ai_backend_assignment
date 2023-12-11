@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
-
+const authRouter=require("./routes/auth")
+const sellerrouter=require("./routes/seller")
+const buyerrouter=require("./routes/buyer")
 // INIT
 const PORT = process.env.PORT || 3000;
 const DB =
@@ -10,11 +12,14 @@ const DB =
 const app = express(); 
 // middleware
 app.use(express.json());
+app.use(authRouter)
+app.use(sellerrouter)
+app.use(buyerrouter)
 
 // Connections
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(DB)
+  .connect(DB) 
   .then(() => {
     console.log("Connection Successful");
   })

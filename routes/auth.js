@@ -3,7 +3,6 @@ const User = require("../models/user");
 const bcryptjs = require("bcryptjs");
 const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
-const auth = require("../middlewares/auth");
 
 // Register
 authRouter.post("/api/auth/register", async (req, res) => {
@@ -14,7 +13,7 @@ authRouter.post("/api/auth/register", async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
-        .status(400)
+        .status(400) 
         .json({ msg: "User with same email already exists!" });
     }
 
@@ -29,6 +28,7 @@ authRouter.post("/api/auth/register", async (req, res) => {
     });
     user = await user.save();
     res.json(user);
+
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -40,13 +40,13 @@ authRouter.post("/api/auth/login",async(req,res)=>{
     try{
       const {email,password}=req.body
 
-      const user=User.findOne({email:email});
+      const user=await User.findOne({email:email});
       if(!user){
         return res
         .status(400)
         .json({ msg: "User with this email does not exist!" });
       }
-      const ismatch=bcryptjs.compare(password,user.password);
+      const ismatch= await bcryptjs.compare(password,user.password);
 
       if(!ismatch){
         return res.status(400).json({ msg: "Incorrect password." });
@@ -59,3 +59,4 @@ authRouter.post("/api/auth/login",async(req,res)=>{
         res.status(500).json({error:e.message});
     }
 });
+module.exports=authRouter
