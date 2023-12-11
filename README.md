@@ -8,6 +8,8 @@
 
 **routes/seller.js**-Contains all seller routes
 
+**models**-Contains all mongodb schema's
+
 **Postman Documentation** -https://documenter.getpostman.com/view/31731477/2s9Ykhhjz5
 
 
