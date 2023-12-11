@@ -1,6 +1,6 @@
 # unity.ai_backend_assignment
 
-Used MongoDB as Database
+**Used MongoDB as Database**
 
 **routes/auth.js**-Contains all authentication routes
 
